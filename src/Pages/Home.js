@@ -1,24 +1,16 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Layout } from "./App.js";
-import "./App.css";
+import "../App.css";
+import { useState, useRef } from "react";
+import AuthProvider from "../Hooks/Auth.js";
 
-const Home = () => (
-	<Layout>
-		<Home />
-	</Layout>
-);
-
-Home = () => (
-	<div className="home">
-		<h1 className="home__title">Home</h1>
-		<p className="home__description">
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-			quibusdam, voluptatum, quae, voluptas quod voluptates quidem
-			accusantium voluptatibus quos quia voluptate. Quisquam, quae
-			accusantium. Quisquam, quae accusantium. Quisquam, quae accusantium.
+const Home = (props) => (
+	<div>
+		<h3>Home Page</h3>
+		<p>
+			Welcome to the home page. This is a protected route. You must be logged in
+			to view this page.
 		</p>
 	</div>
+	
 );
 
 export default Home;

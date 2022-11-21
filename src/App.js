@@ -1,37 +1,48 @@
+import { useEffect, useState } from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
+import Home from "./Pages/Home";
+import Register from "./Pages/Register";
+import Login from "./Pages/Login";
+import AdminPage from "./Pages/AdminPage";
+import NavBar from "./Components/NavBar";
+import { useAuth } from "./Hooks/Auth";
 import "./App.css";
-import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
+const urlEndpoint = "http://localhost:4000";
 
-const Layout = ({ children }) => (
-	<div className="app">
-		<div className="app__header">
-			<nav className="app__nav">
-				<ul className="app__nav-list">
-					<Link to="/" className="app__nav-link">
-						Home
-					</Link>
-					<Link to="/register" className="app__nav-link">
-						Register
-					</Link>
-					<Link to="/login" className="app__nav-link">
-						Login
-					</Link>
-				</ul>
-			</nav>
+function App() {
+	const [user, setUser] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const { login, logout, register, token, userId } = useAuth();
+
+	useEffect(() => {
+		if (token) {
+			fetch(`${urlEndpoint}/users/${userId}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					setUser(data);
+					setLoading(false);
+				});
+		} else {
+			setLoading(false);
+		}
+	}, [token, userId]);
+
+	return (
+		<div className="App">
+			<NavBar user={user} logout={logout} />
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/register" element={<Register register={register} />} />
+				<Route path="/login" element={<Login login={login} />} />
+				<Route path="/admin" element={<AdminPage user={user} />} />
+			</Routes>
 		</div>
-		<div className="app__content">{children}</div>
-	</div>
-);
-
-const App = () => (
-	<Router>
-		<Routes>
-			<Route exact path="/" element={Home} />
-			<Route path="/register" element={Register} />
-			<Route path="/login" element={Login} />
-		</Routes>
-	</Router>
-);
+	);
+}
 
 export default App;
